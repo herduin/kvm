@@ -84,6 +84,15 @@ export interface UIState {
 
   isEmbedMode: boolean;
   setEmbedMode: (enabled: boolean) => void;
+
+  isMobileMode: boolean;
+  setMobileMode: (enabled: boolean) => void;
+
+  rightClickNextTap: boolean;
+  setRightClickNextTap: (enabled: boolean) => void;
+
+  touchMode: "trackpad" | "direct";
+  setTouchMode: (mode: "trackpad" | "direct") => void;
 }
 
 export const useUiStore = create<UIState>(set => ({
@@ -123,6 +132,15 @@ export const useUiStore = create<UIState>(set => ({
 
   isEmbedMode: false,
   setEmbedMode: (enabled: boolean) => set({ isEmbedMode: enabled }),
+
+  isMobileMode: false,
+  setMobileMode: (enabled: boolean) => set({ isMobileMode: enabled }),
+
+  rightClickNextTap: false,
+  setRightClickNextTap: (enabled: boolean) => set({ rightClickNextTap: enabled }),
+
+  touchMode: "trackpad",
+  setTouchMode: (mode: "trackpad" | "direct") => set({ touchMode: mode }),
 }));
 
 export interface RTCState {

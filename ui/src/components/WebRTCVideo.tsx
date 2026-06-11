@@ -5,9 +5,12 @@ import { cx } from "@/cva.config";
 import { isWindows } from "@/utils";
 import useKeyboard from "@hooks/useKeyboard";
 import useMouse from "@hooks/useMouse";
+import { useMobileMode } from "@hooks/useMobileMode";
+import { useTouchTrackpad } from "@hooks/useTouchTrackpad";
 import { useRTCStore, useSettingsStore, useUiStore, useVideoStore } from "@hooks/stores";
 import { JsonRpcResponse, useJsonRpc } from "@hooks/useJsonRpc";
 import VirtualKeyboard from "@components/VirtualKeyboard";
+import MobileToolbar from "@components/MobileToolbar";
 import Actionbar from "@components/ActionBar";
 import MacroBar from "@components/MacroBar";
 import InfoBar from "@components/InfoBar";
@@ -71,8 +74,14 @@ export default function WebRTCVideo({
   // Video enhancement settings
   const { videoSaturation, videoBrightness, videoContrast } = useSettingsStore();
 
-  // OCR mode
+  // OCR mode and mobile mode
   const { isOcrMode } = useUiStore();
+
+  // Detect touch/mobile device and expose isMobileMode via the store
+  const { isMobileMode } = useMobileMode();
+
+  // Attach touch-trackpad gesture engine to the video element
+  useTouchTrackpad(videoElm as React.RefObject<HTMLElement | null>);
 
   // RTC related states
   const { peerConnection } = useRTCStore();
@@ -569,11 +578,12 @@ export default function WebRTCVideo({
     [onVideoPlaying, videoKeyDownHandler, videoKeyUpHandler],
   );
 
-  // Setup Mouse Events
+  // Setup Mouse Events (skipped in mobile mode — touch trackpad handles input instead)
   useEffect(
     function setMouseModeEventListeners() {
       const videoElmRefValue = videoElm.current;
       if (!videoElmRefValue) return;
+      if (isMobileMode) return;
 
       const isRelativeMouseMode = settings.mouseMode === "relative";
       const mouseHandler = isRelativeMouseMode ? relMouseMoveHandler : absMouseMoveHandler;
@@ -622,6 +632,7 @@ export default function WebRTCVideo({
       };
     },
     [
+      isMobileMode,
       isPointerLockActive,
       isPointerLockPossible,
       requestPointerLock,
@@ -758,7 +769,7 @@ export default function WebRTCVideo({
                       )}
                     </div>
                   </div>
-                  <VirtualKeyboard />
+                  {isMobileMode ? <MobileToolbar /> : <VirtualKeyboard />}
                 </div>
               </div>
             </div>
