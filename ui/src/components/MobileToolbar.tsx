@@ -76,7 +76,7 @@ export default function MobileToolbar() {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
 
-  const toggleScrollMode = useCallback(() => {
+  const toggleTouchMode = useCallback(() => {
     setTouchMode(touchMode === "trackpad" ? "direct" : "trackpad");
   }, [touchMode, setTouchMode]);
 
@@ -108,7 +108,7 @@ export default function MobileToolbar() {
           label={
             touchMode === "direct" ? m.mobile_touch_mode_direct() : m.mobile_touch_mode_trackpad()
           }
-          onClick={toggleScrollMode}
+          onClick={toggleTouchMode}
           active={touchMode === "direct"}
         />
         <ToolbarButton
